@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import { runBotNow } from '../../src/bot.js';
 
 export async function handler(event, context) {
