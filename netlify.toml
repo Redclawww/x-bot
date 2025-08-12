@@ -1,0 +1,14 @@
+[build]
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+  external_node_modules = [
+    "twitter-api-v2",
+    "@google/generative-ai",
+    "@netlify/blobs"
+  ]
+
+[functions."bot-scheduler"]
+  # Every 20 minutes
+  schedule = "*/20 * * * *" 
