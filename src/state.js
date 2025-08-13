@@ -14,8 +14,23 @@ function defaultState() {
   };
 }
 
+function resolveBlobsOptions() {
+  const siteID = process.env.BLOBS_SITE_ID || process.env.NETLIFY_SITE_ID || process.env.SITE_ID;
+  const token = process.env.BLOBS_TOKEN || process.env.NETLIFY_BLOBS_TOKEN || process.env.NETLIFY_API_TOKEN;
+  if (siteID && token) {
+    return { siteID, token };
+  }
+  return undefined;
+}
+
+function getBlobsStore() {
+  const options = resolveBlobsOptions();
+  if (options) return getStore(STORE_NAME, options);
+  return getStore(STORE_NAME);
+}
+
 export async function loadState() {
-  const store = getStore(STORE_NAME);
+  const store = getBlobsStore();
   const state = await store.get(STATE_KEY, { type: 'json' });
   if (!state) return defaultState();
   // Reset if the day changed
@@ -32,7 +47,7 @@ export async function loadState() {
 }
 
 export async function saveState(state) {
-  const store = getStore(STORE_NAME);
+  const store = getBlobsStore();
   await store.set(STATE_KEY, JSON.stringify(state), { contentType: 'application/json' });
 }
 
